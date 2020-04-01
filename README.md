@@ -2,14 +2,26 @@ A solution for [mountain car problem](https://gym.openai.com/envs/MountainCar-v0
 
 ## Contents
 * [Requirements](#requirements)
-* [Q-table results](#q-table-results)
+* [How to run](#how-to-run)
 * [DQN results](#dqn-results)
+* [Q-table results](#q-table-results)
 
 ## Requirements
 * **PyTorch** ([instructions](https://pytorch.org/get-started/locally/))
 * **NumPy** ([instructions](http://www.scipy.org/install.html))
 * **gym** ([instructions](https://github.com/openai/gym#installation))
 * **seaborn** ([instructions](https://seaborn.pydata.org/installing.html))
+
+## How to run
+* Clone this repo to your local computer
+* Install all required dependencies
+* ???
+* Type in console: 
+* * `python deep_Q_learning.py` if you want to run deep-approach version
+* * `python Q_learning.py` if you want to run algorithmic-approach version
+* You're good now
+
+## DQN results
 
 ## Q-table results
 Results with algorithmic approach with following parameters:
@@ -26,5 +38,3 @@ avg_test_reward = -112.15 test_episode_amount = 100
 ![](static/QL_episodes=40001_lr=0.2_dr=0.9_rt=modified_sc10_max_eps=0.5_min_eps=0.1.png)
 ![](static/Q_table_episodes=40001_lr=0.2_dr=0.9_rt=modified_sc10_max_eps=0.5_min_eps=0.1.png)
 ![](static/Q_table_episodes=40001_lr=0.2_dr=0.9_rt=modified_sc10_max_eps=0.5_min_eps=0.1_values.png)
-
-## DQN results
