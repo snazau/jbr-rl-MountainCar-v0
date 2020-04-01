@@ -35,6 +35,9 @@ Results with algorithmic approach with following parameters:
 
 avg_test_reward = -112.15 test_episode_amount = 100
 
+*Avg reward*
 ![](static/QL_episodes=40001_lr=0.2_dr=0.9_rt=modified_sc10_max_eps=0.5_min_eps=0.1.png)
+*Policy, 0 - move left, 1 - do nothing, 2 - move right*
 ![](static/Q_table_episodes=40001_lr=0.2_dr=0.9_rt=modified_sc10_max_eps=0.5_min_eps=0.1.png)
+*Q-table values*
 ![](static/Q_table_episodes=40001_lr=0.2_dr=0.9_rt=modified_sc10_max_eps=0.5_min_eps=0.1_values.png)
