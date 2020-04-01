@@ -12,11 +12,29 @@ preload = True
 
 
 def get_index_on_grid(grid_values, value):
+	'''
+	Return index of closest value of given array (abs) to the given value
+	grid_values - array
+	value - value to compare with
+	'''
+
 	index = np.argmin(np.abs(np.array(grid_values) - value))
 	return index
 
 
 def train_episode(Q_table, learning_rate, discount_rate, eps, reward_type="normal", speed_coef=10, render=False):
+	'''
+	Trains policy for one episode
+	Q_table - policy, 3dim numpy array
+	learning_rate - update rate
+	discount_rate - gamma
+	eps - value for epsilon greedy strategy
+	reward_type - "normal" or "modified"
+	speed_coef - useful only with reward_type="modified", speed coefficient in reward formula
+	render - if true render the environent
+	Returns accumulated_reward
+	'''
+
 	global enviroment
 
 	position_min, speed_min = enviroment.observation_space.low
@@ -75,6 +93,17 @@ def train_episode(Q_table, learning_rate, discount_rate, eps, reward_type="norma
 
 
 def train(episode_amount, learning_rate, discount_rate, max_eps, min_eps, reward_type, speed_coef):
+	'''
+	Trains policy
+	episode_amount - amount of episodes to train
+	learning_rate - update rate
+	discount_rate - gamma
+	max_eps, min_eps - possible values for epsilon greedy strategy
+	reward_type - "normal" or "modified"
+	speed_coef - useful only with reward_type="modified", speed coefficient in reward formula
+	Returns Q_table, avg_rewards_indices, avg_rewards
+	'''
+
 	global enviroment
 
 	position_min, speed_min = enviroment.observation_space.low
@@ -117,6 +146,12 @@ def train(episode_amount, learning_rate, discount_rate, max_eps, min_eps, reward
 
 
 def test_episode(Q_table, render=False):
+	'''
+	Tests one episode with given policy
+	Q_table - policy, 3dim numpy array
+	render - if true render the environent
+	'''
+
 	global enviroment
 
 	position_min, speed_min = enviroment.observation_space.low
@@ -150,6 +185,13 @@ def test_episode(Q_table, render=False):
 
 
 def test(Q_table, episode_amount):
+	'''
+	Tests given policy
+	Q_table - policy, 3dim numpy array
+	episode_amount - amount of episodes to test
+	Returns mean reward
+	'''
+
 	global enviroment
 
 	rewards = []
@@ -162,17 +204,9 @@ def test(Q_table, episode_amount):
 
 def best_parameters_search(parameters):
 	'''
-	enviroment - gym env
-	parameters - dictionary with content like:
-	parameters = {
-		"episode_amount": [20001],
-		"learning_rate": [0.1],
-		"discount_rate": [0.9, 0.99],
-		"reward_type": ["normal"],
-		"speed_coef": [10],
-		"max_eps": [0.5],
-		"min_eps": [0.0, 0.05, 0.1],
-	}
+	Searches for best combination of given parameters
+	parameters - dictionary with list of parameters
+	Returns solution_parameters, best_params, best_avg_test_reward, best_Q_table
 	'''
 
 	global enviroment
@@ -245,6 +279,13 @@ def best_parameters_search(parameters):
 
 
 def print_parameters_search_result(solution_parameters, best_params, best_avg_test_reward):
+	'''
+	Prints result of parameters search
+	solution_parameters - dictionary with list of parameters that solve task < 110 reward
+	best_params - dictionary with best found parameters
+	best_avg_test_reward - mean reward on N episodes (most likely N=100)
+	'''
+
 	print("Solution sets:")
 	for reward, episode_amount, learning_rate, discount_rate, reward_type, speed_coef, max_eps, min_eps in zip(solution_parameters["reward"], solution_parameters["episode_amount"], solution_parameters["learning_rate"], solution_parameters["discount_rate"], solution_parameters["reward_type"], solution_parameters["speed_coef"], solution_parameters["max_eps"], solution_parameters["min_eps"]):
 		print("episode_amount", episode_amount)
@@ -263,6 +304,13 @@ def print_parameters_search_result(solution_parameters, best_params, best_avg_te
 
 
 def save_Q_table(Q_table, params, save_path):
+	'''
+	Saves Q_table with corresponding parameters into pickle format
+	Q_table - 3dim numpy array that contains values of Q_table
+	params - dictionary with parameters
+	save_path - str, where to save file
+	'''
+
 	data = {
 		"Q_table": Q_table,
 		"params": params,
@@ -272,6 +320,14 @@ def save_Q_table(Q_table, params, save_path):
 
 
 def load_Q_table(path):
+	'''
+	Loads Q_table with corresponding parameters from pickle format
+	Q_table - 3dim numpy array that contains values of Q_table
+	params - dictionary with parameters
+	path - str, path to read file
+	Returns Q_table, params
+	'''
+
 	with open(path, "rb") as f:
 		data = pickle.load(f)
 	print(path, "loaded")
