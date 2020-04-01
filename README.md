@@ -20,6 +20,7 @@ Results with algorithmic approach with following parameters:
 * max_eps = 0.5
 * min_eps = 0.1
 * grid_size = 80 * 60
+
 avg_test_reward = -112.15 test_episode_amount = 100
 
 ## DQN results
