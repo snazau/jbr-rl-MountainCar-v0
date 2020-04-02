@@ -17,12 +17,12 @@ import visualization
 enviroment = gym.make('MountainCar-v0')
 device = torch.device("cuda:0")
 curr_date = datetime.datetime.now().strftime('%b%d_%H-%M-%S')
-preload = False
+preload = True
 
 
-def initialization(hidden_size_1, hidden_size_2):
+def initialization(hidden_size_1, hidden_size_2, activation):
 	global device
-	learning_model = DQN(hidden_size_1, hidden_size_2)
+	learning_model = DQN(hidden_size_1, hidden_size_2, activation)
 	target_model = copy.deepcopy(learning_model)
 
 	def init_weights(layer):
@@ -152,7 +152,7 @@ def load_model(checkpoint_path):
 	global device
 	checkpoint = torch.load(checkpoint_path)
 	params = checkpoint["params"]
-	model = DQN(params["hs1"], params["hs2"])
+	model = DQN(params["hs1"], params["hs2"], params["activation"])
 	model.load_state_dict(checkpoint["state_dict"])
 	model = model.to(device)
 	print(checkpoint_path, "loaded")
@@ -189,6 +189,7 @@ if __name__ == "__main__":
 			"dr": 0.99,
 			"hs1": 64,
 			"hs2": 64,
+			"activation": "prelu",
 			"max_eps": 0.5,
 			"min_eps": 0.1,
 			"batch_size": 256,
@@ -197,9 +198,11 @@ if __name__ == "__main__":
 			"sync_models": 1000,
 			"buf_size": 5000,
 		}
+		print("Train config:")
+		print_params(params)
 		params_str = params_to_str(params)
 
-		learning_model, target_model = initialization(params["hs1"], params["hs2"])
+		learning_model, target_model = initialization(params["hs1"], params["hs2"], params["activation"])
 
 		render_every_n = 5000
 		avg_test_rewards = []
@@ -222,7 +225,7 @@ if __name__ == "__main__":
 			action = select_action(learning_model, state, eps)
 			state_new, reward, done, info = enviroment.step(action)
 			if params["reward_type"] == "mod":
-				modified_reward = reward + 15 * abs(state_new[1]) + (state_new[0] if state_new[0] > 0.25 else 0)
+				modified_reward = reward + 10 * abs(state_new[1]) + (state_new[0] if state_new[0] > 0.25 else 0)
 			else:
 				modified_reward = reward
 
@@ -264,26 +267,21 @@ if __name__ == "__main__":
 		print("final avg_test_reward", test(target_model, episode_amount=100))
 		print("best avg_test_reward", test(best_model, episode_amount=100), "on step =", best_step)
 
-		save_path = os.path.join(checkpoints_dir, "DQN_" + params_str + ".pth.tar")
+		save_path = os.path.join(checkpoints_dir, "DQN_" + curr_date + ".pth.tar")
 		params["best_step"] = best_step
 		save_checkpoint(best_model, params, save_path=save_path)
 		model = best_model
 
-		save_path = os.path.join(visualization_dir, "DQN_" + params_str + "_rewards.png")
-		visualization.plot_avg_rewards(avg_test_rewards_indices, avg_test_rewards, save_path=save_path, xlabel="Steps(thousands)", ylabel="Reward")
+		save_path = os.path.join(visualization_dir, "DQN_" + curr_date + "_rewards.png")
+		visualization.plot_avg_rewards(avg_test_rewards_indices, avg_test_rewards, save_path=save_path, xlabel="Steps(thousands)", ylabel="Reward(avg)")
 
 		discrete_policy = get_descrete_policy(model)
-		save_path = os.path.join(visualization_dir, "DQN_" + params_str + ".png")
+		save_path = os.path.join(visualization_dir, "DQN_" + curr_date + ".png")
 		visualization.plot_Q_table(discrete_policy, save_path=save_path)
 	else:
-		checkpoint_name = "dqn_lr=0.001_dr=0.99_hs1=64_hs2=128_max_eps=0.5_min_eps=0.1_batch_size=256_reward_type=modified_step_amount=100001_update_model_every_n=1000_buffer_size=5000.pth.tar"
-		checkpoint_name = "dqn_lr=0.001_dr=0.99_hs1=64_hs2=128_max_eps=0.8_min_eps=0.1_batch_size=256_reward_type=modified_step_amount=100001_update_model_every_n=1000_buffer_size=5000.pth.tar"
-		checkpoint_name = "dqn_lr=0.001_dr=0.99_hs1=32_hs2=64_max_eps=0.5_min_eps=0.1_batch_size=256_reward_type=modified_step_amount=100001_update_model_every_n=1000_buffer_size=5000.pth.tar"
-		checkpoint_name = "dqn_lr=0.001_dr=0.99_hs1=64_hs2=128_max_eps=0.5_min_eps=0.1_batch_size=256_reward_type=modified_step_amount=100001_update_model_every_n=1000_buffer_size=5000.pth (2).tar"
-		checkpoint_name = "DQN_lr=0.001_dr=0.99_hs1=64_hs2=128_max_eps=0.5_min_eps=0.1_batch_size=256_reward_type=modified_step_amount=100001_sync_models=1000_ReLU.pth.tar"
-		# good
-		checkpoint_name = "DQN_lr=0.001_dr=0.99_hs1=64_hs2=128_max_eps=0.5_min_eps=0.1_batch_size=256_reward_type=mod_step_amount=100001_sync_models=1000_buf_size=5000.pth.tar"
-		#
+		# checkpoint_name = "DQN_lr=0.001_dr=0.99_hs1=64_hs2=128_max_eps=0.5_min_eps=0.1_batch_size=256_reward_type=mod_step_amount=100001_sync_models=1000_buf_size=5000.pth.tar"
+		# checkpoint_name = "DQN_Apr02_15-17-34.pth.tar"  # step = 85k prelu avg ~ 104
+		checkpoint_name = "DQN_Apr02_14-15-12.pth.tar"  # step = 69k prelu avg ~ 100
 		pretrained_path = os.path.join(checkpoints_dir, checkpoint_name)
 		model, params = load_model(pretrained_path)
 
