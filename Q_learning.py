@@ -344,7 +344,7 @@ if __name__ == "__main__":
 	if not os.path.exists(visualization_dir):
 		os.makedirs(visualization_dir)
 
-	Q_tables_dir = "./Q_tables"
+	Q_tables_dir = "./models/QL"
 	if not os.path.exists(Q_tables_dir):
 		os.makedirs(Q_tables_dir)
 

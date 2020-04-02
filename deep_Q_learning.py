@@ -175,7 +175,7 @@ def params_to_str(params):
 
 
 if __name__ == "__main__":
-	checkpoints_dir = "./checkpoints"
+	checkpoints_dir = "./models/DQL"
 	if not os.path.exists(checkpoints_dir):
 		os.makedirs(checkpoints_dir)
 
@@ -290,7 +290,7 @@ if __name__ == "__main__":
 		print("avg_test_reward =", avg_test_reward, "test_episode_amount =", test_episode_amount)
 
 		discrete_policy = get_descrete_policy(model)
-		visualization.plot_Q_table(discrete_policy, save_path="./" + checkpoint_name + ".png")
+		# visualization.plot_Q_table(discrete_policy, save_path="./" + checkpoint_name + ".png")
 
 	print()
 	print("Playing time c:")
