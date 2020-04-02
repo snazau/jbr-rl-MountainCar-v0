@@ -384,7 +384,7 @@ if __name__ == "__main__":
 	print()
 
 	print("Playing time c:")
-	play_episode_amount = 3
+	play_episode_amount = 10
 	for episode in range(play_episode_amount):
 		print("Episode {}/{}".format(episode + 1, play_episode_amount))
 		reward = test_episode(Q_table, render=True)
