@@ -27,6 +27,8 @@ Results with deep approach with following parameters:
 * step_amount = 100001
 * learning_rate = 0.001
 * discount_rate = 0.99
+* hidden_size_1 = 64
+* hidden_size_2 = 64
 * max_eps = 0.5
 * min_eps = 0.1
 * batch_size = 256
