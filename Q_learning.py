@@ -322,10 +322,10 @@ def save_Q_table(Q_table, params, save_path):
 def load_Q_table(path):
 	'''
 	Loads Q_table with corresponding parameters from pickle format
-	Q_table - 3dim numpy array that contains values of Q_table
-	params - dictionary with parameters
 	path - str, path to read file
 	Returns Q_table, params
+	Q_table - 3dim numpy array that contains values of Q_table
+	params - dictionary with parameters
 	'''
 
 	with open(path, "rb") as f:

@@ -21,6 +21,14 @@ preload = True
 
 
 def initialization(hidden_size_1, hidden_size_2, activation):
+	'''
+	Initializes learning and target models (3-fc-layer)
+	hidden_size_1 - size of 1st hidden layer
+	hidden_size_2 - size of 2nd hidden layer
+	activation - name of activation function
+	Returns initialized models
+	'''
+
 	global device
 	learning_model = DQN(hidden_size_1, hidden_size_2, activation)
 	target_model = copy.deepcopy(learning_model)
@@ -37,6 +45,12 @@ def initialization(hidden_size_1, hidden_size_2, activation):
 
 
 def prepare_input(state):
+	'''
+	Prepares input for model
+	state - raw input
+	Returns prepared input
+	'''
+
 	global device
 	prepared_input = torch.tensor(state).to(device).float()  # (S, )
 	prepared_input = prepared_input.unsqueeze(0)  # adding batch dim [1 x S]
@@ -44,6 +58,14 @@ def prepare_input(state):
 
 
 def select_action(model, state, eps):
+	'''
+	Selects action based on epsilon-greedy strategy
+	model - policy model
+	state - current state
+	eps - value for epsilon greedy strategy
+	Returns selected action
+	'''
+
 	if random.random() < eps:
 		return random.randint(0, 2)
 	prepared_input = prepare_input(state)
@@ -55,6 +77,16 @@ def select_action(model, state, eps):
 
 
 def train_batch(batch, learning_model, target_model, optimizer, discount_rate):
+	'''
+	Trains model with one batch
+	batch - batch of training data
+	learning_model - model that get parameters updates
+	target_model - model that produce targets for learning_model
+	optimizer - learning_model's parameters optimizer
+	discount_rate - gamma
+	Return loss
+	'''
+
 	global device
 	learning_model.train()
 
@@ -87,6 +119,13 @@ def train_batch(batch, learning_model, target_model, optimizer, discount_rate):
 
 
 def test_episode(model, render=False):
+	'''
+	Tests one episode with given policy
+	model - policy
+	render - if true render the environent
+	Returns reward per episode
+	'''
+
 	global enviroment
 
 	done = False
@@ -105,6 +144,13 @@ def test_episode(model, render=False):
 
 
 def test(model, episode_amount):
+	'''
+	Tests given policy
+	model - policy
+	episode_amount - amount of episodes to test
+	Returns mean reward
+	'''
+
 	global enviroment
 	model.eval()
 
@@ -117,6 +163,12 @@ def test(model, episode_amount):
 
 
 def get_descrete_policy(model, sample_amount=50):
+	'''
+	Creates discrete version of predicted by model policy
+	model - policy
+	sample_amount - discretization parameter
+	'''
+
 	global enviroment
 	model.eval()
 
@@ -141,6 +193,13 @@ def get_descrete_policy(model, sample_amount=50):
 
 
 def save_checkpoint(model, params, save_path):
+	'''
+	Saves model weight with corresponding parameters
+	model - policy
+	params - dictionary with parameters
+	save_path - str, where to save file
+	'''
+
 	checkpoint = {
 		"params": params,
 		"state_dict": model.state_dict(),
@@ -149,6 +208,14 @@ def save_checkpoint(model, params, save_path):
 
 
 def load_model(checkpoint_path):
+	'''
+	Loads model and parameters from checkpoint
+	path - str, path to read file
+	Returns model, params
+	model - policy
+	params - dictionary with parameters
+	'''
+
 	global device
 	checkpoint = torch.load(checkpoint_path)
 	params = checkpoint["params"]
@@ -161,12 +228,21 @@ def load_model(checkpoint_path):
 
 
 def print_params(params):
+	'''
+	Prints parameters
+	params - dictionary with parameters
+	'''
+
 	for key, value in zip(params.keys(), params.values()):
 		print(key, "=", value)
 	print()
 
 
 def params_to_str(params):
+	'''
+	Returns parameters as a string
+	params - dictionary with parameters
+	'''
 	params_str = ""
 	for key, value in zip(params.keys(), params.values()):
 		params_str += key + "=" + str(value) + "_"
